@@ -14,9 +14,9 @@ export function isMatchFinished(status: MatchStatus): boolean {
 
 const STATUS_LABELS: Record<MatchStatus, string> = {
   NOT_STARTED: "Upcoming",
-  FIRST_HALF: "1st Half",
+  FIRST_HALF: "First Half",
   HALF_TIME: "Half-Time",
-  SECOND_HALF: "2nd Half",
+  SECOND_HALF: "Second Half",
   FULL_TIME: "Full-Time",
 };
 

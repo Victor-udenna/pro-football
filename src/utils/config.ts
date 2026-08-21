@@ -6,3 +6,5 @@ export const CHAT_USERNAME_STORAGE_KEY = "profootball:chat-username";
 export const CHAT_USER_ID_STORAGE_KEY = "profootball:chat-user-id";
 export const CHAT_MESSAGE_MAX_LENGTH = 500;
 export const TYPING_DEBOUNCE_MS = 2000;
+
+export const THEME_STORAGE_KEY = "profootball:theme";

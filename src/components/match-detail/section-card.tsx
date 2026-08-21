@@ -9,9 +9,9 @@ export function SectionCard({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="rounded-xl border bg-card p-5 ring-1 ring-foreground/10">
-      <h2 className={cn(DISPLAY_TEXT_CLASS, "mb-4 text-sm")}>{title}</h2>
+    <section>
+      <h2 className={cn(DISPLAY_TEXT_CLASS, "mb-4 text-sm text-foreground")}>{title}</h2>
       {children}
-    </div>
+    </section>
   );
 }

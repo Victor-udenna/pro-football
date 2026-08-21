@@ -81,11 +81,11 @@ by reusing existing semantic tokens and `Badge`/`Card` variants:
 
 | Status    | Badge variant | Card treatment                  |
 | --------- | ------------- | -------------------------------- |
-| Live      | `destructive` | `ring-destructive/25`, pulsing dot (`animate-ping`) |
+| Live      | `destructive` | `ring-destructive/25`, animated `LiveIndicator` bar |
 | Upcoming  | `outline`     | —                                 |
 | Finished  | `secondary`   | —                                 |
 
-See `components/matches/status-badge.tsx` and `components/matches/match-card.tsx`.
+See `components/matches/live-indicator.tsx` and `components/matches/match-row.tsx`.
 
 ---
 
@@ -136,17 +136,17 @@ express it.
 ## 6. Border radius
 
 The one real customization on top of shadcn defaults — every step derives
-from a single `--radius` base (`0.625rem`):
+from a single `--radius` base (`0.5rem` / 8px):
 
-| Utility        | Formula          | Usage                              |
-| -------------- | ----------------- | ------------------------------------ |
-| `rounded-sm`   | `radius * 0.6`     | Small controls                       |
-| `rounded-md`   | `radius * 0.8`     | Inputs, small buttons                |
-| `rounded-lg`   | `radius` (10px)    | Default — buttons, cards             |
-| `rounded-xl`   | `radius * 1.4`     | Match cards                          |
-| `rounded-2xl`  | `radius * 1.8`     | —                                     |
-| `rounded-3xl`  | `radius * 2.2`     | —                                     |
-| `rounded-4xl`  | `radius * 2.6`     | Pill-shaped badges                   |
+| Utility        | Formula          | Value | Usage                        |
+| -------------- | ----------------- | ----- | ------------------------------ |
+| `rounded-sm`   | `radius * 0.6`     | 4.8px | Small controls                 |
+| `rounded-md`   | `radius * 0.8`     | 6.4px | Inputs, small buttons           |
+| `rounded-lg`   | `radius`           | 8px   | Default — buttons, cards        |
+| `rounded-xl`   | `radius * 1.4`     | 11.2px | Match cards                    |
+| `rounded-2xl`  | `radius * 1.8`     | 14.4px | —                              |
+| `rounded-3xl`  | `radius * 2.2`     | 17.6px | —                              |
+| `rounded-4xl`  | `radius * 2.6`     | 20.8px | Pill-shaped badges             |
 
 Changing the look of the whole app's roundedness means changing
 `--radius` once in `:root` — not each individual `rounded-*` usage.

@@ -20,8 +20,8 @@ The project follows the following naming conventions:
 Examples:
 
 ```text
-match-card.tsx
-status-badge.tsx
+match-row.tsx
+live-indicator.tsx
 use-live-scores.ts
 
 match-detail/

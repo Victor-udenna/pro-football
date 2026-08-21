@@ -10,10 +10,10 @@ import type { ChatMessage } from "@/types/chat";
 export function ChatMessageList({
   messages,
   currentUserId,
-}: {
+}: Readonly<{
   messages: ChatMessage[];
   currentUserId: string | null;
-}) {
+}>) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

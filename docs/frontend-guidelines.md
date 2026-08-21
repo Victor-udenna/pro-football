@@ -19,8 +19,8 @@ Use **kebab-case** for all files.
 Examples:
 
 ```text
-match-card.tsx
-status-badge.tsx
+match-row.tsx
+live-indicator.tsx
 use-live-scores.ts
 api.ts
 socket-provider.tsx

@@ -1,16 +1,26 @@
-import { StatusBadge } from "@/components/matches/status-badge";
 import { cn } from "@/lib/utils";
-import { formatKickoffTime, formatMatchMinute } from "@/utils/match";
+import { formatKickoffTime, formatMatchMinute, formatMatchStatus, isMatchLive } from "@/utils/match";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
+import { LiveIndicator } from "@/components/matches/live-indicator";
 import type { MatchDetail } from "@/types/match";
 
 export function MatchHeader({ match }: Readonly<{ match: MatchDetail }>) {
   const showKickoff = match.status === "NOT_STARTED";
+  const live = isMatchLive(match.status);
 
   return (
-    <div className="rounded-xl border bg-card p-6 ring-1 ring-foreground/10">
+    <div>
       <div className="mb-6 flex items-center justify-between">
-        <StatusBadge status={match.status} />
+        <span
+          className={cn(
+            DISPLAY_TEXT_CLASS,
+            "flex items-center gap-1.5 text-sm",
+            live ? "text-destructive" : "text-muted-foreground"
+          )}
+        >
+          {live && <LiveIndicator />}
+          {formatMatchStatus(match.status)}
+        </span>
         <span className={cn(DISPLAY_TEXT_CLASS, "text-sm text-muted-foreground tabular-nums")}>
           {showKickoff
             ? `Kicks off ${formatKickoffTime(match.startTime)}`
@@ -55,14 +65,14 @@ function TeamBlock({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-2 text-center",
-        align === "right" ? "sm:flex-row-reverse sm:text-right" : "sm:flex-row sm:text-left"
+        "flex flex-col items-center gap-1 text-center",
+        align === "right" ? "sm:items-end sm:text-right" : "sm:items-start sm:text-left"
       )}
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground sm:size-11 sm:text-sm">
+      <span className={cn(DISPLAY_TEXT_CLASS, "text-[11px] text-muted-foreground")}>
         {shortName}
       </span>
-      <span className="text-xs font-medium sm:text-base">{name}</span>
+      <span className="text-sm font-semibold text-foreground sm:text-base">{name}</span>
     </div>
   );
 }

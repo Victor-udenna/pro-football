@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { ShieldIcon } from "lucide-react";
 import { useMatches } from "@/hooks/use-matches";
 import { useLiveScores } from "@/hooks/use-live-scores";
-import { MatchCard } from "@/components/matches/match-card";
+import { MatchRow } from "@/components/matches/match-row";
 import { LoadingState } from "@/components/state/loading-state";
 import { ErrorState } from "@/components/state/error-state";
 import { EmptyState } from "@/components/state/empty-state";
-import { compareMatchesByStatus } from "@/utils/match";
+import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
+import { cn } from "@/lib/utils";
+import { compareMatchesByStatus, isMatchLive } from "@/utils/match";
 
 export function MatchList() {
   const { data: matches, isPending, isError, refetch } = useMatches();
@@ -42,11 +44,23 @@ export function MatchList() {
     );
   }
 
+  const liveCount = sortedMatches.filter((match) => isMatchLive(match.status)).length;
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {sortedMatches.map((match) => (
-        <MatchCard key={match.id} match={match} />
-      ))}
+    <div>
+      <div className="flex items-baseline justify-between border-b pb-3">
+        <h1 className={cn(DISPLAY_TEXT_CLASS, "text-base text-foreground")}>
+          Today
+        </h1>
+        <span className={cn(DISPLAY_TEXT_CLASS, "text-xs text-muted-foreground")}>
+          {liveCount} Live &middot; {sortedMatches.length} Matches
+        </span>
+      </div>
+      <div className="divide-y">
+        {sortedMatches.map((match) => (
+          <MatchRow key={match.id} match={match} />
+        ))}
+      </div>
     </div>
   );
 }
