@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ export function UsernameDialog({
 }>) {
   const [value, setValue] = useState("");
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     onSubmit(value.trim() || generateGuestUsername());
   }
