@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type SubmitEvent } from "react";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { generateGuestUsername } from "@/utils/id";
 
+type UsernameFormValues = {
+  name: string;
+};
+
 export function UsernameDialog({
   open,
   onSubmit,
@@ -20,11 +24,12 @@ export function UsernameDialog({
   open: boolean;
   onSubmit: (name: string) => void;
 }>) {
-  const [value, setValue] = useState("");
+  const { register, handleSubmit } = useForm<UsernameFormValues>({
+    defaultValues: { name: "" },
+  });
 
-  function handleSubmit(event: SubmitEvent) {
-    event.preventDefault();
-    onSubmit(value.trim() || generateGuestUsername());
+  function submit({ name }: UsernameFormValues) {
+    onSubmit(name.trim() || generateGuestUsername());
   }
 
   function handleGuest() {
@@ -40,14 +45,8 @@ export function UsernameDialog({
             Pick a display name to chat with other fans watching this match.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <Input
-            autoFocus
-            placeholder="Your name"
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            maxLength={24}
-          />
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-3">
+          <Input autoFocus placeholder="Your name" maxLength={24} {...register("name")} />
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleGuest}>
               Continue as guest
