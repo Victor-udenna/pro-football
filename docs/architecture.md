@@ -1,120 +1,37 @@
 # Frontend Architecture
 
-## Overview
+Next.js 16 App Router. Two routes today — match list (`/`) and match detail
+(`/matches/[id]`) — so the structure stays flat rather than feature-modularized.
+Revisit if that changes.
 
-ProFootball Live Match Center is built using **Next.js 16 App Router**.
+## Principles
 
-The app currently has two routes — a match list (`/`) and a match detail
-page (`/matches/[id]`) — so the structure favors a small, flat layout over
-a multi-feature module system. As the app grows past a couple of routes,
-revisit whether a feature-first split earns its keep.
+- **Shared components** — `components/` splits into `ui/` (generic primitives),
+  `layout/` (page chrome), `shared/` (domain code, grouped by what it serves:
+  `matches/`, `match-detail/`, `chat/`, `providers/`, `state/`).
+- **Thin routes** — pages compose components, nothing else.
+- **Server first** — Server Components by default; `"use client"` only for
+  sockets, interaction, or local state.
+- **Separated state** — server state via TanStack Query (`use-matches`,
+  `use-match`); real-time via Socket.IO merged into the query cache
+  (`use-live-scores`, `use-match-live-updates`); local UI state via `useState`.
+  No global client store.
 
-The primary goals of this architecture are:
+## Folder structure
 
-- Scalability
-- Maintainability
-- Separation of concerns
-- Reusability
-- Performance
-
----
-
-# Core Principles
-
-## 1. Shared Components
-
-UI components live under `components/`, split into three top-level groups:
-
-```text
-components/
-    ui/            shadcn/base-ui primitives (Button, Badge, Card, Dialog, ...)
-    layout/         Site-wide chrome (SiteHeader)
-    shared/         Everything else, grouped by what it serves:
-        matches/        Match list + match row
-        match-detail/    Match detail page sections
-        chat/           Live match chat
-        providers/       App-wide context providers
-        state/          Shared loading / error / empty states
 ```
-
-`components/ui/` holds generic, business-agnostic primitives. Everything
-under `components/shared/` is specific to this product's domain (matches,
-chat) but reused across more than one route or component tree.
-
----
-
-## 2. Thin Routes
-
-Pages inside the App Router stay minimal — they compose components and
-delegate everything else.
-
-```tsx
-export default function Home() {
-  return (
-    <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
-      <MatchList />
-    </div>
-  );
-}
-```
-
----
-
-## 3. Server First
-
-By default, pages and layouts are Server Components (`RootLayout`, and the
-route files themselves). Client Components (`"use client"`) are introduced
-only when necessary, such as:
-
-- Socket connections (`SocketProvider`, `use-socket`, `use-live-scores`)
-- User interaction (chat input, username dialog)
-- Local component state
-
----
-
-## 4. Separation of State
-
-Server state and client/UI state are treated differently.
-
-**Server state** — fetched via `services/api.ts` and cached with
-**TanStack Query** (`QueryProvider`, `use-matches`, `use-match`).
-
-**Real-time state** — pushed over a Socket.IO connection
-(`services/socket.ts`, `SocketProvider`) and merged into query cache or
-local state by hooks like `use-live-scores` and `use-match-live-updates`.
-
-**Local/UI state** — component-level `useState` (e.g. chat input value,
-username dialog). There is no global client store in use today.
-
----
-
-# High-Level Folder Structure
-
-```text
 src/
-├── app/            Routes, layouts, loading UI
-├── components/      UI, grouped as described above
-├── hooks/          Reusable hooks shared across components
-├── lib/            Framework-agnostic helpers (e.g. cn())
-├── services/        API client and socket client
-├── types/          Shared TypeScript types
-└── utils/          Config, formatting, and small domain helpers
+├── app/          Routes, layouts, loading UI
+├── components/    ui/, layout/, shared/ — see folder-structure.md
+├── hooks/        Shared hooks
+├── lib/          cn() and other framework-agnostic helpers
+├── services/      API + socket clients
+├── types/        Shared TypeScript types
+└── utils/        Config, formatting, domain helpers
 ```
 
-Refer to `folder-structure.md` for details on each directory.
+## Philosophy
 
----
-
-# Design Philosophy
-
-Architecture decisions should favor:
-
-- Readability over cleverness
-- Simplicity over abstraction
-- Composition over inheritance
-- Reuse over duplication
-
-Don't introduce a directory (or a dependency already in `package.json`,
-like Zustand or React Hook Form) until there's an actual use for it in the
-app — an empty `stores/` folder or an unused form library is a decision the
-docs shouldn't imply has already been made.
+Readability over cleverness, simplicity over abstraction, reuse over
+duplication. Don't add a directory, or wire up an installed-but-unused
+dependency (Zustand, React Hook Form), before there's real code that needs it.

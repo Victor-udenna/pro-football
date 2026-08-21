@@ -1,127 +1,366 @@
 # ProFootball Live Match Center
 
-Real-time football scores, match events, stats, and per-match chat, built
-on Next.js 16 (App Router).
+A real-time football match center built with **Next.js 16 (App Router)**. The application provides live match scores, events, statistics, match status updates, and per-match chat.
 
-## Getting started
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Application Structure](#application-structure)
+- [Architecture](#architecture)
+- [Responsive Match Detail](#responsive-match-detail)
+- [Theme Management](#theme-management)
+- [Known Limitations and Trade-offs](#known-limitations-and-trade-offs)
+- [Development Notes](#development-notes)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+Install the project dependencies:
 
 ```bash
 npm install
+```
+
+### Start the Development Server
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+The application will be available at:
 
-Create `.env.local` with:
+```text
+http://localhost:3000
+```
+
+## Environment Variables
+
+Create a `.env.local` file in the project root and add the following:
 
 ```bash
 NEXT_PUBLIC_API_BASE_URL=https://profootball.srv883830.hstgr.cloud
 NEXT_PUBLIC_SOCKET_URL=https://profootball.srv883830.hstgr.cloud
 ```
 
-The app has two pages: the match list (`/`) and a match's detail page with
-chat (`/matches/[id]`).
+### Environment Variable Reference
 
-## How it's built
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_API_BASE_URL` | Base URL used for HTTP API requests |
+| `NEXT_PUBLIC_SOCKET_URL` | URL used to establish the Socket.IO connection |
 
-When a page first loads, it fetches its data the normal way — a regular
-HTTP request to the API, once. From then on, updates arrive over a
-Socket.IO connection that stays open in the background: goals, cards,
-stat changes, and status changes all arrive as small "here's what
-changed" messages, and the app patches them straight into the already-
-loaded data instead of re-fetching. So the match list and match detail
-pages don't poll the API on a timer — they just sit and wait for the
-socket to tell them something changed. (The one exception: if a match
-detail page somehow never got its live-update socket messages, it still
-quietly re-checks with the API every 20 seconds — but only until the
-match ends, since a finished match can't change anymore.)
+## Application Structure
 
-Chat works a little differently: there's no API endpoint for it at all.
-Messages, typing indicators, and "so-and-so joined" notices exist only as
-socket events, held in the page's own memory for as long as you're on it.
-Nothing about the chat is fetched on load, because there's nothing to
-fetch it from.
+The application currently consists of two primary routes:
 
-The code itself is organized as one flat set of folders
-(`components/`, `hooks/`, `services/`, etc.) rather than split into
-per-feature modules — with only two pages, separate feature folders would
-just add navigation overhead for no real benefit. Inside `components/`,
-the split is `ui/` (generic, business-agnostic primitives — Button, Card,
-Dialog), `layout/` (page chrome — just the header), and `shared/`
-(everything domain-specific, grouped internally by what it serves —
-`matches/`, `match-detail/`, `chat/`, `providers/`, `state/`). The
-`docs/` folder has more detail: [architecture.md](docs/architecture.md)
-and [folder-structure.md](docs/folder-structure.md) explain the folder
-layout, and [design-system.md](docs/design-system.md) covers the colors,
-fonts, and spacing rules.
+| Route | Description |
+|---|---|
+| `/` | Displays the list of available live and upcoming matches |
+| `/matches/[id]` | Displays detailed information for a specific match, including timeline, statistics, and chat |
 
-The match detail page reuses its layout instead of branching into a
-separate mobile component: below the score header sits an underline tab
-bar (Timeline / Stats / Messages) that, on small screens, shows exactly
-one section at a time. At the `lg` breakpoint the Messages tab disappears
-and chat becomes a fixed sidebar instead — but Timeline and Stats stay
-tab-switched even on desktop, rather than reverting to both stacked at
-once. Same components, same state, just different CSS breakpoints
-deciding what's visible.
+The project intentionally uses a **flat application structure** rather than organizing code into separate feature modules. With only two primary pages, this keeps navigation and maintenance straightforward without introducing unnecessary architectural overhead.
 
-Theme (light/dark/system) is handled without a dependency on
-`next-themes` — a small `ThemeProvider` keeps the current choice in
-`localStorage` and toggles a `.dark` class on `<html>`, and a blocking
-inline script (`next/script` with `strategy="beforeInteractive"`) applies
-that class before the page paints, so there's no flash of the wrong theme
-on load. Defaults to the OS/browser preference until the user picks
-otherwise.
+### Component Organization
 
-## Things worth knowing (trade-offs)
+Components are grouped into three main categories:
 
-**The API has no database — match state is not persisted.** The server
-(`profootball.srv883830.hstgr.cloud`) holds matches in an in-memory store
-only, and only exposes matches with a status between `NOT_STARTED` and
-`FULL_TIME`. Once a match transitions to `FULL_TIME`, the server evicts it
-from that store shortly after and generates a new simulated match in its
-place. There's no persistence layer behind it — it's simulating a live
-matchday, not maintaining a historical record.
+- `components/ui/` — Generic, business-agnostic UI primitives such as `Button`, `Card`, and `Dialog`.
+- `components/layout/` — Application-level layout elements such as the header.
+- `components/shared/` — Domain-specific components, organized internally by responsibility:
+  - `matches/`
+  - `match-detail/`
+  - `chat/`
+  - `providers/`
+  - `state/`
 
-The consequence: while a match is still in the client's React Query
-cache, going to full-time doesn't cause any errors — the last known state
-just stops updating, since polling and socket updates for a finished
-match have nothing left to change. But a hard refresh discards that
-cache and re-fetches from the server, and by that point the match may
-already have been evicted server-side, so `GET /api/matches/{id}` returns
-a `404`. `MatchDetailView` checks for that specific status code and
-renders "This match has ended and is no longer available" instead of a
-generic, retryable error — but it can't recover the score or event data,
-since the server-side record no longer exists either. The actual fix
-would be persisting finished matches on the backend (or the client
-snapshotting match state to its own storage before eviction); neither is
-something this front-end alone can address.
+Additional architectural documentation is available in:
 
-**Chat history is not persisted either, for the same reason.** Messages
-exist only in the socket connection's in-memory client state
-(`useChat`'s `useState`) for the duration of the session — there's no
-storage layer backing it, so reloading or reopening a match's chat starts
-from an empty state regardless of prior activity.
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/folder-structure.md`](docs/folder-structure.md)
+- [`docs/design-system.md`](docs/design-system.md)
 
-**Zustand and React Hook Form are installed but not used.** They're in
-`package.json`, but nothing in the app currently needs a global state
-store or a form library — plain `useState` covers everything so far.
-Don't take their presence as a sign they're the intended pattern; add them
-when something actually calls for them.
+## Architecture
 
-**There's no real login.** Chat identities are just a random guest name
-generated in the browser (`utils/id.ts`) and remembered in `localStorage`
-— not a real account system.
+### Initial Data Loading
 
-**Quick reactions are just chat messages, not a separate feature.** The
-emoji row above the chat input (⚽🔥😂👏😢🟨) calls the exact same
-`sendMessage` used by the text field — it's a shortcut for sending an
-emoji-only message, not a distinct "reaction" protocol. That means no
-per-message reaction counts or de-duplication (tapping 🔥 five times
-posts five separate 🔥 messages) — the trade-off for not needing any
-backend changes to ship it, since the Socket.IO server only understands
-`send_message`, not a reaction event.
+When a page is loaded, its initial data is retrieved through a standard HTTP request to the API.
 
-**No test suite.** There's no Jest/Vitest/Playwright setup — changes are
-verified by running the dev server and checking the behavior directly.
-Fine for a project this size, but worth knowing before assuming CI would
-catch a regression.
+After the initial request completes, the application does not continuously poll the API for updates. Instead, it establishes a persistent **Socket.IO** connection and listens for real-time events.
+
+This approach allows the application to:
+
+1. Fetch the initial state once.
+2. Maintain an open socket connection.
+3. Receive incremental updates as events occur.
+4. Patch the existing client-side data rather than repeatedly fetching the entire resource.
+
+Live events can include:
+
+- Goals
+- Cards
+- Match statistics
+- Match status changes
+- Other match-state updates
+
+### Fallback Polling
+
+The match detail page includes a fallback mechanism for cases where live socket updates are not received.
+
+While the match is still active, the client can re-check the API every **20 seconds**. Polling stops once the match reaches `FULL_TIME`, because a completed match is no longer expected to change.
+
+The primary update mechanism therefore remains Socket.IO, with polling serving only as a resilience mechanism.
+
+### Chat
+
+Chat is implemented entirely through Socket.IO.
+
+There is currently no HTTP API endpoint for chat history. Chat-related information exists only within the active socket session and the page's client-side state.
+
+Socket events are used for:
+
+- Sending messages
+- Receiving messages
+- Typing indicators
+- Join notifications
+
+Because there is no persistence layer for chat, messages are not restored when the page is refreshed or reopened.
+
+## Responsive Match Detail
+
+The match detail page uses a shared responsive layout rather than maintaining separate mobile and desktop implementations.
+
+The layout consists of:
+
+1. Match score/header section
+2. Tab navigation
+3. Timeline
+4. Statistics
+5. Chat
+
+### Mobile
+
+On smaller screens, the match content uses an underline tab bar:
+
+- Timeline
+- Stats
+- Messages
+
+Only one section is displayed at a time.
+
+### Desktop
+
+At the `lg` breakpoint:
+
+- The Messages tab is hidden.
+- Chat becomes a fixed sidebar.
+- Timeline and Stats remain tab-switched.
+
+This approach keeps the same components and application state across screen sizes while allowing CSS breakpoints to determine the appropriate presentation.
+
+## Theme Management
+
+Theme support includes:
+
+- Light
+- Dark
+- System
+
+The application does not use `next-themes`.
+
+Instead, a lightweight custom `ThemeProvider`:
+
+1. Stores the user's theme preference in `localStorage`.
+2. Toggles the `.dark` class on the `<html>` element.
+3. Falls back to the operating system/browser preference when no explicit preference has been selected.
+
+A blocking inline script is loaded using `next/script` with:
+
+```tsx
+strategy="beforeInteractive"
+```
+
+This applies the correct theme before the page is painted and prevents a flash of the wrong theme during initial loading.
+
+## Known Limitations and Trade-offs
+
+### 1. Match Data Is Not Persisted
+
+The backend does not currently use a database. Match state is maintained in an in-memory store.
+
+The API server:
+
+```text
+https://profootball.srv883830.hstgr.cloud
+```
+
+only exposes matches whose status is between `NOT_STARTED` and `FULL_TIME`.
+
+Once a match reaches `FULL_TIME`, the server removes it from the in-memory store shortly afterward and generates another simulated match.
+
+This means the backend currently simulates a live matchday rather than maintaining a historical match database.
+
+#### Impact on the Client
+
+If a match reaches `FULL_TIME` while its data is still present in the client's React Query cache, the existing view remains usable because the final known state is retained locally.
+
+However, a hard refresh clears the client cache and triggers a new API request. If the match has already been evicted from the backend, the API can return:
+
+```text
+404 Not Found
+```
+
+`MatchDetailView` handles this specific response and displays:
+
+> This match has ended and is no longer available
+
+instead of presenting it as a generic retryable error.
+
+The frontend cannot restore the match's historical data because the backend record no longer exists.
+
+#### Recommended Production Solution
+
+For a production implementation, finished matches should be persisted in a database. An alternative would be to snapshot completed match data into client-side storage before eviction, although server-side persistence is the preferred solution.
+
+---
+
+### 2. Chat History Is Not Persisted
+
+Chat messages are stored only in the active client-side state managed by `useChat`.
+
+There is currently no persistent chat storage layer.
+
+As a result:
+
+- Refreshing the page clears the chat.
+- Reopening a match starts with an empty chat.
+- Previous messages cannot be retrieved from the backend.
+
+A production implementation would require a persistent chat service or database-backed message history.
+
+---
+
+### 3. Zustand and React Hook Form Are Installed but Unused
+
+`Zustand` and `React Hook Form` are currently included in `package.json`, but neither is required by the current implementation.
+
+The application currently relies primarily on React state and hooks.
+
+Their presence in the dependency list should therefore not be interpreted as an architectural requirement.
+
+They can be introduced later if the application grows to require:
+
+- More complex global state management
+- Cross-page client state
+- Complex forms
+- Advanced form validation
+
+---
+
+### 4. There Is No Real Authentication
+
+The application does not currently implement user authentication.
+
+Chat users are represented by randomly generated guest identities created in the browser and persisted in `localStorage`.
+
+The identity-generation logic is located in:
+
+```text
+utils/id.ts
+```
+
+This is sufficient for a demonstration environment but should be replaced with a proper authentication and user-management system for production.
+
+---
+
+### 5. Quick Reactions Are Implemented as Chat Messages
+
+The chat interface includes quick reaction buttons:
+
+```text
+⚽ 🔥 😂 👏 😢 🟨
+```
+
+These are not implemented as a separate reaction protocol.
+
+Instead, clicking a reaction invokes the same `sendMessage` function used by the regular text input and sends an emoji-only chat message.
+
+For example, clicking `🔥` five times results in five separate `🔥` messages.
+
+There is currently no:
+
+- Per-message reaction count
+- Reaction aggregation
+- Reaction deduplication
+- Dedicated reaction Socket.IO event
+
+This implementation was intentionally chosen because it works with the existing `send_message` socket event and does not require backend changes.
+
+A production implementation could introduce a dedicated reaction event and data model.
+
+---
+
+### 6. No Automated Test Suite
+
+The project does not currently include:
+
+- Jest
+- Vitest
+- Playwright
+- Cypress
+- Automated CI test coverage
+
+Changes are currently verified by running the development server and manually checking application behavior.
+
+This is acceptable for a project of this scope, but automated unit, integration, and end-to-end tests should be introduced before the application is considered production-ready.
+
+## Development Notes
+
+### Data Strategy
+
+The application follows a **fetch-on-load, subscribe-for-updates** model:
+
+```text
+Initial page load
+      ↓
+HTTP API request
+      ↓
+Initial match state
+      ↓
+Socket.IO connection
+      ↓
+Real-time events
+      ↓
+Update existing client state
+```
+
+This avoids unnecessary recurring API requests and provides a more responsive real-time experience.
+
+### Production Considerations
+
+Before deploying this architecture to production, the following areas should be addressed:
+
+- Persist completed match data.
+- Persist chat messages where chat history is required.
+- Introduce real authentication and authorization.
+- Add automated testing.
+- Remove unused dependencies where appropriate.
+- Add structured error monitoring.
+- Add API and socket reconnection handling.
+- Consider rate limiting and abuse protection for chat.
+- Introduce a dedicated reaction protocol if reactions become a first-class feature.
+- Add CI checks for linting, type checking, and tests.
+
+## Summary
+
+ProFootball Live Match Center is designed around a lightweight real-time architecture: HTTP is used for initial data retrieval, while Socket.IO handles live match updates and chat.
+
+The frontend deliberately avoids unnecessary polling, feature-folder complexity, and additional state-management dependencies. The current backend is intentionally simulated and in-memory, which keeps the project simple for demonstration purposes but means match history and chat history are not persistent.
+
+For a production implementation, the primary architectural upgrade would be introducing persistent backend storage alongside authentication, automated testing, and stronger operational safeguards.

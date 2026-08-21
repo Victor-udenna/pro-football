@@ -12,6 +12,7 @@ import { SectionCard } from "@/components/shared/match-detail/section-card";
 import { ChatPanel } from "@/components/shared/chat/chat-panel";
 import { LoadingState } from "@/components/shared/state/loading-state";
 import { ErrorState } from "@/components/shared/state/error-state";
+import { Button } from "@/components/ui/button";
 import { ApiError } from "@/services/api";
 import { cn } from "@/lib/utils";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
@@ -33,13 +34,16 @@ export function MatchDetailView({ matchId }: Readonly<{ matchId: string }>) {
 
   return (
     <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
-      <Link
-        href="/"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      <Button
+        variant="outline"
+        size="sm"
+        className="mb-4"
+        nativeButton={false}
+        render={<Link href="/" />}
       >
         <ArrowLeftIcon className="size-4" />
         All matches
-      </Link>
+      </Button>
 
       {isPending && <LoadingState label="Loading match…" />}
 

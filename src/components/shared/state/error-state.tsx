@@ -30,7 +30,12 @@ export function ErrorState({
             </Button>
           )}
           {homeHref && (
-            <Button variant="ghost" size="sm" render={<Link href={homeHref} />}>
+            <Button
+              variant="outline"
+              size="sm"
+              nativeButton={false}
+              render={<Link href={homeHref} />}
+            >
               Back to all matches
             </Button>
           )}
