@@ -21,7 +21,7 @@ export function ChatPanel({ matchId }: Readonly<{ matchId: string }>) {
   const needsUsername = isReady && !username;
 
   return (
-    <div className="flex h-[32rem] flex-col overflow-hidden rounded-xl border bg-card ring-1 ring-foreground/10 lg:sticky lg:top-20">
+    <div className="flex h-128 flex-col overflow-hidden rounded-xl border bg-card ring-1 ring-foreground/10 lg:sticky lg:top-20">
       <div className="border-b px-4 py-3">
         <h2 className={cn(DISPLAY_TEXT_CLASS, "text-sm")}>Match Chat</h2>
         <p className="text-xs text-muted-foreground">

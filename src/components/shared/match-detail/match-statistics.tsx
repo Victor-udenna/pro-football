@@ -1,4 +1,7 @@
-import type { MatchStatistics as MatchStatisticsData, Team } from "@/types/match";
+import type {
+  MatchStatistics as MatchStatisticsData,
+  Team,
+} from "@/types/match";
 
 interface StatRowData {
   label: string;
@@ -11,11 +14,11 @@ export function MatchStatistics({
   statistics,
   homeTeam,
   awayTeam,
-}: {
+}: Readonly<{
   statistics: MatchStatisticsData;
   homeTeam: Team;
   awayTeam: Team;
-}) {
+}>) {
   const rows: StatRowData[] = [
     {
       label: "Possession",
@@ -23,20 +26,36 @@ export function MatchStatistics({
       away: statistics.possession.away,
       isPercentage: true,
     },
-    { label: "Shots", home: statistics.shots.home, away: statistics.shots.away },
+    {
+      label: "Shots",
+      home: statistics.shots.home,
+      away: statistics.shots.away,
+    },
     {
       label: "Shots on Target",
       home: statistics.shotsOnTarget.home,
       away: statistics.shotsOnTarget.away,
     },
-    { label: "Corners", home: statistics.corners.home, away: statistics.corners.away },
-    { label: "Fouls", home: statistics.fouls.home, away: statistics.fouls.away },
+    {
+      label: "Corners",
+      home: statistics.corners.home,
+      away: statistics.corners.away,
+    },
+    {
+      label: "Fouls",
+      home: statistics.fouls.home,
+      away: statistics.fouls.away,
+    },
     {
       label: "Yellow Cards",
       home: statistics.yellowCards.home,
       away: statistics.yellowCards.away,
     },
-    { label: "Red Cards", home: statistics.redCards.home, away: statistics.redCards.away },
+    {
+      label: "Red Cards",
+      home: statistics.redCards.home,
+      away: statistics.redCards.away,
+    },
   ];
 
   return (
@@ -52,7 +71,7 @@ export function MatchStatistics({
   );
 }
 
-function StatBar({ label, home, away, isPercentage }: StatRowData) {
+function StatBar({ label, home, away, isPercentage }: Readonly<StatRowData>) {
   const total = home + away;
   const homePct = total === 0 ? 50 : (home / total) * 100;
   const awayPct = 100 - homePct;
@@ -64,15 +83,23 @@ function StatBar({ label, home, away, isPercentage }: StatRowData) {
           {home}
           {isPercentage ? "%" : ""}
         </span>
-        <span className="text-xs font-medium text-muted-foreground">{label}</span>
+        <span className="text-xs font-medium text-muted-foreground">
+          {label}
+        </span>
         <span>
           {away}
           {isPercentage ? "%" : ""}
         </span>
       </div>
       <div className="flex h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className="bg-primary transition-all" style={{ width: `${homePct}%` }} />
-        <div className="bg-primary/25 transition-all" style={{ width: `${awayPct}%` }} />
+        <div
+          className="bg-primary transition-all"
+          style={{ width: `${homePct}%` }}
+        />
+        <div
+          className="bg-primary/25 transition-all"
+          style={{ width: `${awayPct}%` }}
+        />
       </div>
     </div>
   );

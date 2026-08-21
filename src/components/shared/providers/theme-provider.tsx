@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { THEME_STORAGE_KEY } from "@/utils/config";
 
 export type Theme = "light" | "dark" | "system";
@@ -15,18 +22,18 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 function applyTheme(theme: Theme) {
   const isDark =
     theme === "dark" ||
-    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.classList.toggle("dark", isDark);
 }
 
-export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode }>) {
+export function ThemeProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [theme, setThemeState] = useState<Theme>("system");
 
   useEffect(() => {
     const stored = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
-    // localStorage is unavailable during SSR, so the persisted theme must be
-    // hydrated client-side after mount rather than derived during render.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored) setThemeState(stored);
   }, []);
 
@@ -48,7 +55,9 @@ export function ThemeProvider({ children }: Readonly<{ children: React.ReactNode
 
   const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {

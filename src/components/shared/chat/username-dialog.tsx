@@ -16,10 +16,10 @@ import { generateGuestUsername } from "@/utils/id";
 export function UsernameDialog({
   open,
   onSubmit,
-}: {
+}: Readonly<{
   open: boolean;
   onSubmit: (name: string) => void;
-}) {
+}>) {
   const [value, setValue] = useState("");
 
   function handleSubmit(event: FormEvent) {

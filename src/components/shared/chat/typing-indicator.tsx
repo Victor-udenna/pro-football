@@ -1,6 +1,6 @@
 import type { TypingUser } from "@/types/chat";
 
-export function TypingIndicator({ users }: { users: TypingUser[] }) {
+export function TypingIndicator({ users }: Readonly<{ users: TypingUser[] }>) {
   if (users.length === 0) {
     return <div className="h-5" />;
   }

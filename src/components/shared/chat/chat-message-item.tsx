@@ -4,10 +4,10 @@ import type { ChatMessage } from "@/types/chat";
 export function ChatMessageItem({
   message,
   isOwn,
-}: {
+}: Readonly<{
   message: ChatMessage;
   isOwn: boolean;
-}) {
+}>) {
   if (message.kind === "system") {
     return (
       <div className="py-1 text-center text-xs text-muted-foreground">

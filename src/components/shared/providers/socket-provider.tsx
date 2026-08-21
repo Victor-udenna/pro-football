@@ -11,10 +11,12 @@ interface SocketContextValue {
 
 export const SocketContext = createContext<SocketContextValue | null>(null);
 
-export function SocketProvider({ children }: { children: React.ReactNode }) {
+export function SocketProvider({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const socket = useMemo(() => getSocket(), []);
   const [status, setStatus] = useState<ConnectionStatus>(() =>
-    socket.connected ? "connected" : "connecting"
+    socket.connected ? "connected" : "connecting",
   );
 
   useEffect(() => {
