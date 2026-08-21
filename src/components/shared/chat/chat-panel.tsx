@@ -2,10 +2,11 @@
 
 import { useChatIdentity } from "@/hooks/use-chat-identity";
 import { useChat } from "@/hooks/use-chat";
-import { UsernameDialog } from "@/components/chat/username-dialog";
-import { ChatMessageList } from "@/components/chat/chat-message-list";
-import { TypingIndicator } from "@/components/chat/typing-indicator";
-import { ChatInput } from "@/components/chat/chat-input";
+import { UsernameDialog } from "@/components/shared/chat/username-dialog";
+import { ChatMessageList } from "@/components/shared/chat/chat-message-list";
+import { TypingIndicator } from "@/components/shared/chat/typing-indicator";
+import { QuickReactions } from "@/components/shared/chat/quick-reactions";
+import { ChatInput } from "@/components/shared/chat/chat-input";
 import { cn } from "@/lib/utils";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
 
@@ -29,6 +30,7 @@ export function ChatPanel({ matchId }: Readonly<{ matchId: string }>) {
       </div>
       <ChatMessageList messages={messages} currentUserId={userId} />
       <TypingIndicator users={typingUsers} />
+      <QuickReactions disabled={!canChat} onReact={sendMessage} />
       <ChatInput disabled={!canChat} onSend={sendMessage} onTyping={notifyTyping} />
       <UsernameDialog open={needsUsername} onSubmit={setUsername} />
     </div>

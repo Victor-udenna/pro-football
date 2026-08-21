@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { SocketContext } from "@/components/providers/socket-provider";
+import { SocketContext } from "@/components/shared/providers/socket-provider";
 
 export function useSocket() {
   const context = useContext(SocketContext);

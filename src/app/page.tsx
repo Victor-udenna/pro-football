@@ -1,4 +1,4 @@
-import { MatchList } from "@/components/matches/match-list";
+import { MatchList } from "@/components/shared/matches/match-list";
 
 export default function Home() {
   return (

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { formatKickoffTime, formatMatchMinute, formatMatchStatus, isMatchLive } from "@/utils/match";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
-import { LiveIndicator } from "@/components/matches/live-indicator";
+import { LiveIndicator } from "@/components/shared/matches/live-indicator";
 import type { MatchDetail } from "@/types/match";
 
 export function MatchHeader({ match }: Readonly<{ match: MatchDetail }>) {

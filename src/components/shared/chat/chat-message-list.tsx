@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import { MessageCircleIcon } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChatMessageItem } from "@/components/chat/chat-message-item";
-import { EmptyState } from "@/components/state/empty-state";
+import { ChatMessageItem } from "@/components/shared/chat/chat-message-item";
+import { EmptyState } from "@/components/shared/state/empty-state";
 import type { ChatMessage } from "@/types/chat";
 
 export function ChatMessageList({

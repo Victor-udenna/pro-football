@@ -85,7 +85,7 @@ by reusing existing semantic tokens and `Badge`/`Card` variants:
 | Upcoming  | `outline`     | —                                 |
 | Finished  | `secondary`   | —                                 |
 
-See `components/matches/live-indicator.tsx` and `components/matches/match-row.tsx`.
+See `components/shared/matches/live-indicator.tsx` and `components/shared/matches/match-row.tsx`.
 
 ---
 

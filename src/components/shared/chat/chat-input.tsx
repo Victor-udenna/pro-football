@@ -25,7 +25,7 @@ export function ChatInput({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t p-3">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 px-3 pt-2 pb-3">
       <Input
         value={value}
         disabled={disabled}

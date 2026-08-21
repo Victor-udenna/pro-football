@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Oswald, Source_Sans_3 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { QueryProvider } from "@/components/providers/query-provider";
-import { SocketProvider } from "@/components/providers/socket-provider";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import { QueryProvider } from "@/components/shared/providers/query-provider";
+import { SocketProvider } from "@/components/shared/providers/socket-provider";
+import { ThemeProvider } from "@/components/shared/providers/theme-provider";
 import { SiteHeader } from "@/components/layout/site-header";
 import { THEME_STORAGE_KEY } from "@/utils/config";
 

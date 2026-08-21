@@ -3,7 +3,7 @@ import { ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatMatchMinute, formatMatchStatus, isMatchLive } from "@/utils/match";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
-import { LiveIndicator } from "@/components/matches/live-indicator";
+import { LiveIndicator } from "@/components/shared/matches/live-indicator";
 import type { Match } from "@/types/match";
 
 export function MatchRow({ match }: Readonly<{ match: Match }>) {

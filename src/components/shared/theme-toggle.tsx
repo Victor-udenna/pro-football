@@ -2,7 +2,7 @@
 
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme, type Theme } from "@/components/providers/theme-provider";
+import { useTheme, type Theme } from "@/components/shared/providers/theme-provider";
 
 const NEXT_THEME: Record<Theme, Theme> = {
   system: "light",

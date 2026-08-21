@@ -50,21 +50,32 @@ Business logic should remain outside this directory.
 
 ## components/
 
-All UI, grouped by what it serves rather than by feature module:
-
 ```text
 components/
     ui/            Generic primitives (shadcn/base-ui) — Button, Badge, Card, Dialog, Input, Avatar, ScrollArea, Separator
     layout/        Site-wide chrome — SiteHeader
+    shared/         Everything else — reusable across more than one route
+```
+
+`components/ui/` stays business-agnostic — no component in there should know
+what a "match" is. `components/layout/` is page chrome (headers, shells).
+Everything domain-specific or cross-cutting lives under `components/shared/`,
+grouped internally by what it serves rather than flattened:
+
+```text
+components/shared/
     matches/        Match list page components
     match-detail/   Match detail page components
     chat/          Live match chat
     providers/      App-wide React providers (QueryProvider, SocketProvider)
     state/         Shared loading / error / empty state components
+    connection-status-badge.tsx
+    theme-toggle.tsx
 ```
 
-`components/ui/` should stay business-agnostic. Anything that knows about
-matches, chat, or football belongs in one of the other subdirectories.
+There is no `features/` directory — with two routes, a full feature-module
+split would be overhead with nothing to isolate (see `architecture.md`).
+`shared/` is where that domain code lives instead, one subfolder per concern.
 
 ---
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ConnectionStatusBadge } from "@/components/connection-status-badge";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ConnectionStatusBadge } from "@/components/shared/connection-status-badge";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 export function SiteHeader() {
   return (

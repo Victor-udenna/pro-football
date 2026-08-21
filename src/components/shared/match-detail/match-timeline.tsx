@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { formatEventType } from "@/utils/match";
 import { DISPLAY_TEXT_CLASS } from "@/utils/typography";
 import type { MatchEvent, MatchEventType } from "@/types/match";
-import { EmptyState } from "@/components/state/empty-state";
+import { EmptyState } from "@/components/shared/state/empty-state";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const EVENT_ICONS: Record<MatchEventType, LucideIcon> = {
@@ -33,6 +33,7 @@ const EVENT_ICON_STYLES: Record<MatchEventType, string> = {
 
 const EVENT_ICON_FILLED: Partial<Record<MatchEventType, boolean>> = {
   YELLOW_CARD: true,
+  RED_CARD: true,
 };
 
 export function MatchTimeline({ events }: Readonly<{ events: MatchEvent[] }>) {

@@ -23,23 +23,23 @@ The primary goals of this architecture are:
 
 ## 1. Shared Components
 
-UI components live under `components/`, grouped by the part of the product
-they serve rather than by a feature module:
+UI components live under `components/`, split into three top-level groups:
 
 ```text
 components/
     ui/            shadcn/base-ui primitives (Button, Badge, Card, Dialog, ...)
     layout/         Site-wide chrome (SiteHeader)
-    matches/        Match list + match card
-    match-detail/    Match detail page sections
-    chat/           Live match chat
-    providers/       App-wide context providers
-    state/          Shared loading / error / empty states
+    shared/         Everything else, grouped by what it serves:
+        matches/        Match list + match row
+        match-detail/    Match detail page sections
+        chat/           Live match chat
+        providers/       App-wide context providers
+        state/          Shared loading / error / empty states
 ```
 
 `components/ui/` holds generic, business-agnostic primitives. Everything
-else in `components/` is specific to this product's domain (matches, chat)
-but shared across more than one route or component tree.
+under `components/shared/` is specific to this product's domain (matches,
+chat) but reused across more than one route or component tree.
 
 ---
 

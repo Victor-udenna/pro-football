@@ -1,4 +1,4 @@
-import { MatchDetailView } from "@/components/match-detail/match-detail-view";
+import { MatchDetailView } from "@/components/shared/match-detail/match-detail-view";
 
 export default async function MatchPage({
   params,
