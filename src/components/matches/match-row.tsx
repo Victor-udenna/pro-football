@@ -12,7 +12,7 @@ export function MatchRow({ match }: Readonly<{ match: Match }>) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className="group grid grid-cols-[4.5rem_2.5rem_1fr_auto_auto] grid-rows-2 items-center gap-x-4 gap-y-2 py-5 focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:grid-cols-[5.5rem_3rem_1fr_auto_auto] sm:gap-x-6"
+      className="group -mx-4 grid grid-cols-[4.5rem_2.5rem_1fr_auto_auto] grid-rows-2 items-center gap-x-4 gap-y-2 px-4 py-5 transition-colors hover:bg-foreground/6 focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:-mx-6 sm:grid-cols-[5.5rem_3rem_1fr_auto_auto] sm:gap-x-6 sm:px-6"
     >
       <span
         className={cn(
